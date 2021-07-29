@@ -49,29 +49,22 @@ namespace ActivityEF_DAL
             try
             {
 
-                AdvConnectDB Advcontext = new AdvConnectDB();
-
-
-
-                deptDALObj = Advcontext.Departments.SingleOrDefault(d => d.DepartmentID == DepartmentId);
-                if (deptDALObj != null)
+                using (Advcontext = new AdvConnectDB())
                 {
-                    //Advcontext.Departments.Attach(deptDALObj);
-                    Advcontext.Departments.Remove(deptDALObj);
-                    Advcontext.SaveChanges();
-
-
+                    Department department = new Department();
+                    department = Advcontext.Departments.Find(DepartmentId);
+                    Advcontext.Departments.Remove(department);
+                    ret = Advcontext.SaveChanges();
+                    return ret;
                 }
-                else
-                    throw new Exception();
-
             }
 
             catch (Exception ex)
             {
                 Console.WriteLine("Deletion failed.");
+                throw ex;
             }
-            return ret;
+            
         }
 
         public List<Department> DisplayDepartment()
